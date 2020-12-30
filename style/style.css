@@ -1,7 +1,9 @@
 /* Adds a nice Onify background */
 body {
-  background: linear-gradient(#53bd33, #1faf88, #028ab5, #0273bb, #113c9e, #2b2994, #52168b, #780983);
+background: linear-gradient(#53bd33, #1faf88, #028ab5, #0273bb, #113c9e, #2b2994, #52168b, #780983);
 }
+
+/* #### PROPERTIES PANEL #### */
 
 /* Hide Asynchronous Continuations */
 div[data-group="async"] {
@@ -27,3 +29,15 @@ div[data-group="historyConfiguration"] {
 div[data-group="listeners"] {
     display: none;
 }
+
+/* #### BPMN ICONS/ELEMENTS #### */
+
+.bpmn-icon-start-event-signal {
+    display: none;
+}
+
+/* 
+.bpmn-icon-business-rule {
+    display: none;
+}
+*/
