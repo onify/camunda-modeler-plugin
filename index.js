@@ -1,6 +1,6 @@
 'use strict';
 
 module.exports = {
-  name: 'Style Plugin Example',
+  name: 'Onify Plugin',
   style: './style/style.css'
 };
