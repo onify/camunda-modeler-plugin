@@ -1,0 +1,29 @@
+/* Adds a nice Onify background */
+body {
+  background: linear-gradient(#53bd33, #1faf88, #028ab5, #0273bb, #113c9e, #2b2994, #52168b, #780983);
+}
+
+/* Hide Asynchronous Continuations */
+div[data-group="async"] {
+    display: none;
+}
+
+/* Hide External Task Configuration */
+div[data-group="externalTaskConfiguration"] {
+    display: none;
+}
+
+/* Hide Job Configuration */
+div[data-group="jobConfiguration"] {
+    display: none;
+}
+
+/* Hide History Configuration */
+div[data-group="historyConfiguration"] {
+    display: none;
+}
+
+/* Hide Listeners */
+div[data-group="listeners"] {
+    display: none;
+}
