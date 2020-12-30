@@ -1,6 +1,6 @@
 # Camunda Modeler Plugin for Onify
 
-Plugin for the Camunda Modeler that hides (via css) elements not used or supported in Onify.
+Plugin for the [Camunda Modeler](https://camunda.com/download/modeler/) that hides (via css) elements not used or supported in Onify.
 
 ## Installation
 
