@@ -2,6 +2,20 @@
 
 Plugin for the [Camunda Modeler](https://camunda.com/download/modeler/) that hides (via css) elements not used or supported in Onify.
 
+## Hidden elements
+
+### Properties Panel
+
+* Asynchronous Continuations
+* External Task Configuration
+* Job Configuration
+* History Configuration
+* Listeners
+
+### BPMN elements
+
+* Signal Start Event 
+
 ## Installation
 
 1. Download ZIP
