@@ -5,5 +5,5 @@ Plugin for the Camunda Modeler that hides (via css) elements not supported in On
 ## Installation
 
 1. Download ZIP
-2. Extract it and put it inside the "resources/plugins" directory
+2. Extract it and put folder inside the "resources/plugins" directory
 3. Restart the modeler
