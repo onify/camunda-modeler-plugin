@@ -32,11 +32,11 @@ div[data-group="listeners"] {
 
 /* #### BPMN ICONS/ELEMENTS #### */
 
+/* 
 .bpmn-icon-start-event-signal {
     display: none;
 }
 
-/* 
 .bpmn-icon-business-rule {
     display: none;
 }

@@ -12,10 +12,6 @@ Plugin for the [Camunda Modeler](https://camunda.com/download/modeler/) that hid
 * History Configuration
 * Listeners
 
-### BPMN elements
-
-* Signal Start Event 
-
 ## Installation
 
 1. Download ZIP
