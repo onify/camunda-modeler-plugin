@@ -6,11 +6,17 @@ Plugin for the [Camunda Modeler](https://camunda.com/download/modeler/) that hid
 
 ### Properties Panel
 
+#### General
+
 * Asynchronous Continuations
 * External Task Configuration
 * Job Configuration
 * History Configuration
 * Listeners
+
+#### Service Tasks
+
+* `Java class` option in `Implementation` dropdown
 
 ## Installation
 

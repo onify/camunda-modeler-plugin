@@ -30,13 +30,14 @@ div[data-group="listeners"] {
     display: none;
 }
 
+/* Hide Service Task/Implementation/Java class */
+select#camunda-implementation-select option[value=class] {
+	display: none;
+}
+
 /* #### BPMN ICONS/ELEMENTS #### */
 
 /* 
-.bpmn-icon-start-event-signal {
-    display: none;
-}
-
 .bpmn-icon-business-rule {
     display: none;
 }
