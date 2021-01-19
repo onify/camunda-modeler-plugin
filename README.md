@@ -17,6 +17,12 @@ Plugin for the [Camunda Modeler](https://camunda.com/download/modeler/) that hid
 #### Service Tasks
 
 * `Java class` option in `Implementation` dropdown
+* `External` option in `Implementation` dropdown
+* `Delegate Expression` option in `Implementation` dropdown
+
+#### Script Tasks
+
+* `External Resource` option in `Script Type` dropdown
 
 ## Installation
 

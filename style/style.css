@@ -35,6 +35,21 @@ select#camunda-implementation-select option[value=class] {
 	display: none;
 }
 
+/* Hide Service Task/Implementation/External */
+select#camunda-implementation-select option[value=external] {
+	display: none;
+}
+
+/* Hide Service Task/Implementation/Delegate Expression */
+select#camunda-implementation-select option[value=delegateExpression] {
+	display: none;
+}
+
+/* Hide Script Task/Script Type/External Resource */
+select#cam-script-type option[value=scriptResource] {
+	display: none;
+}
+
 /* #### BPMN ICONS/ELEMENTS #### */
 
 /* 
