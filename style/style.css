@@ -45,11 +45,6 @@ select#camunda-implementation-select option[value=delegateExpression] {
 	display: none;
 }
 
-/* Hide Script Task/Script Type/External Resource */
-select#cam-script-type option[value=scriptResource] {
-	display: none;
-}
-
 /* #### BPMN ICONS/ELEMENTS #### */
 
 /* 
