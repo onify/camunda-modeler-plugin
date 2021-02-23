@@ -45,6 +45,16 @@ select#camunda-implementation-select option[value=delegateExpression] {
 	display: none;
 }
 
+/* Hide User Task/Due Date */
+div[data-entry="dueDate"] {
+    display: none;
+}
+
+/* Hide User Task/Follow Up Date */
+div[data-entry="followUpDate"] {
+    display: none;
+}
+
 /* #### BPMN ICONS/ELEMENTS #### */
 
 /* 
