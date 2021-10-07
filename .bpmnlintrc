@@ -5,7 +5,6 @@
     "plugin:custom/recommended"
   ],
   "rules": {
-    "label-required": "off",
-    "custom/no-manual-task": "warn"
+    "label-required": "on"
   }
 }

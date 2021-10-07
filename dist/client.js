@@ -1,40 +1,10 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./bpmnlint-plugin-custom/rules/no-manual-task.js":
-/*!********************************************************!*\
-  !*** ./bpmnlint-plugin-custom/rules/no-manual-task.js ***!
-  \********************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-const {
-  is
-} = __webpack_require__(/*! bpmnlint-utils */ "./node_modules/bpmnlint-utils/dist/index.esm.js");
-
-
-/**
- * Rule that reports manual tasks being used.
- */
-module.exports = function() {
-
-  function check(node, reporter) {
-    if (is(node, 'bpmn:ManualTask')) {
-      reporter.report(node.id, 'Element has disallowed type bpmn:ManualTask');
-    }
-  }
-
-  return {
-    check: check
-  };
-};
-
-
-/***/ }),
-
-/***/ "./bpmnlint-plugin-custom/rules/script-format.js":
-/*!*******************************************************!*\
-  !*** ./bpmnlint-plugin-custom/rules/script-format.js ***!
-  \*******************************************************/
+/***/ "./bpmnlint-plugin-custom/rules/script-task.js":
+/*!*****************************************************!*\
+  !*** ./bpmnlint-plugin-custom/rules/script-task.js ***!
+  \*****************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 const {
@@ -51,9 +21,9 @@ module.exports = function() {
   function check(node, reporter) {
     if (is(node, 'bpmn:ScriptTask') && (!node.scriptFormat || (node.scriptFormat !== 'js' && node.scriptFormat !== 'javascript'))) {
       if (!node.scriptFormat) {
-        reporter.report(node.id, 'Script format must be set');
+        reporter.report(node.id, 'Script format must be defined');
       } else {
-        reporter.report(node.id, 'Script format can supports js or javascript');
+        reporter.report(node.id, 'Only `js`/`javascript` are supported script formats');
       }
     }
   }
@@ -94,20 +64,20 @@ module.exports = function() {
       const connector = findElement(node.extensionElements && node.extensionElements.values, 'camunda:Connector');
 
       if (!node.extensionElements || !connector) {
-        reporter.report(node.id, 'Implementation must be set');
-        return reporter.report(node.id, 'Implementation only supports "Connector"');
+        reporter.report(node.id, 'Implementation must be defined');
+        return reporter.report(node.id, 'Implementation only supports `Connector`');
       }
 
       if (!connector.connectorId) {
-        return reporter.report(node.id, 'Connector Id must be set');
+        return reporter.report(node.id, 'Connector Id must be defined');
       }
 
-      if (connector.connectorId !== 'httpRequest' && connector.connectorId !== 'onifyApiRequest') {
-        return reporter.report(node.id, 'Connector Id only supports our service tasks (eg. httpRequest, onifyApiRequest, etc)');
+      if (connector.connectorId !== 'httpRequest' && connector.connectorId !== 'onifyApiRequest' && connector.connectorId !== 'onifyElevatedApiRequest') {
+        return reporter.report(node.id, 'Connector Id only supports `httpRequest`, `onifyApiRequest` and `onifyElevatedApiRequest`');
       }
 
       if (!connector.inputOutput || !connector.inputOutput.inputParameters) {
-        return reporter.report(node.id, 'Input parameters url and responseType must be set');
+        return reporter.report(node.id, 'Connector input parameters `url` and `responseType` must be defined');
       }
 
       const url = connector.inputOutput.inputParameters.find((input) => input.name === 'url');
@@ -116,15 +86,15 @@ module.exports = function() {
       const json = connector.inputOutput.inputParameters.find((input) => input.name === 'json');
 
       if (!url) {
-        return reporter.report(node.id, 'Input parameters url must be set');
+        return reporter.report(node.id, 'Connector input parameter `url` must be defined');
       }
 
       if (!responseType) {
-        return reporter.report(node.id, 'Input parameters responseType must be set');
+        return reporter.report(node.id, 'Connector input parameter `responseType` must be defined');
       }
 
-      if (method && (method.value === 'POST' || method.value === 'PUT' || method.value === 'PATCH') && !json) {
-        return reporter.report(node.id, 'Input parameters json must be set');
+      if (method && (method.value.toUpperCase() === 'POST' || method.value.toUpperCase() === 'PUT' || method.value.toUpperCase() === 'PATCH') && !json) {
+        return reporter.report(node.id, 'Connector input parameters `json` must be defined when method is `POST`, `PUT` or `PATCH`');
       }
     }
   }
@@ -714,40 +684,40 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var bpmnlint_rules_event_sub_process_typed_start_event__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_event_sub_process_typed_start_event__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var bpmnlint_rules_fake_join__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! bpmnlint/rules/fake-join */ "./node_modules/bpmnlint/rules/fake-join.js");
 /* harmony import */ var bpmnlint_rules_fake_join__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_fake_join__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var bpmnlint_rules_no_bpmndi__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! bpmnlint/rules/no-bpmndi */ "./node_modules/bpmnlint/rules/no-bpmndi.js");
-/* harmony import */ var bpmnlint_rules_no_bpmndi__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_no_bpmndi__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var bpmnlint_rules_no_complex_gateway__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! bpmnlint/rules/no-complex-gateway */ "./node_modules/bpmnlint/rules/no-complex-gateway.js");
-/* harmony import */ var bpmnlint_rules_no_complex_gateway__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_no_complex_gateway__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var bpmnlint_rules_no_disconnected__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! bpmnlint/rules/no-disconnected */ "./node_modules/bpmnlint/rules/no-disconnected.js");
-/* harmony import */ var bpmnlint_rules_no_disconnected__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_no_disconnected__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var bpmnlint_rules_no_duplicate_sequence_flows__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! bpmnlint/rules/no-duplicate-sequence-flows */ "./node_modules/bpmnlint/rules/no-duplicate-sequence-flows.js");
-/* harmony import */ var bpmnlint_rules_no_duplicate_sequence_flows__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_no_duplicate_sequence_flows__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var bpmnlint_rules_no_gateway_join_fork__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! bpmnlint/rules/no-gateway-join-fork */ "./node_modules/bpmnlint/rules/no-gateway-join-fork.js");
-/* harmony import */ var bpmnlint_rules_no_gateway_join_fork__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_no_gateway_join_fork__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var bpmnlint_rules_no_implicit_split__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! bpmnlint/rules/no-implicit-split */ "./node_modules/bpmnlint/rules/no-implicit-split.js");
-/* harmony import */ var bpmnlint_rules_no_implicit_split__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_no_implicit_split__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var bpmnlint_rules_no_inclusive_gateway__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! bpmnlint/rules/no-inclusive-gateway */ "./node_modules/bpmnlint/rules/no-inclusive-gateway.js");
-/* harmony import */ var bpmnlint_rules_no_inclusive_gateway__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_no_inclusive_gateway__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var bpmnlint_rules_single_blank_start_event__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! bpmnlint/rules/single-blank-start-event */ "./node_modules/bpmnlint/rules/single-blank-start-event.js");
-/* harmony import */ var bpmnlint_rules_single_blank_start_event__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_single_blank_start_event__WEBPACK_IMPORTED_MODULE_11__);
-/* harmony import */ var bpmnlint_rules_single_event_definition__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! bpmnlint/rules/single-event-definition */ "./node_modules/bpmnlint/rules/single-event-definition.js");
-/* harmony import */ var bpmnlint_rules_single_event_definition__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_single_event_definition__WEBPACK_IMPORTED_MODULE_12__);
-/* harmony import */ var bpmnlint_rules_start_event_required__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! bpmnlint/rules/start-event-required */ "./node_modules/bpmnlint/rules/start-event-required.js");
-/* harmony import */ var bpmnlint_rules_start_event_required__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_start_event_required__WEBPACK_IMPORTED_MODULE_13__);
-/* harmony import */ var bpmnlint_rules_sub_process_blank_start_event__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! bpmnlint/rules/sub-process-blank-start-event */ "./node_modules/bpmnlint/rules/sub-process-blank-start-event.js");
-/* harmony import */ var bpmnlint_rules_sub_process_blank_start_event__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_sub_process_blank_start_event__WEBPACK_IMPORTED_MODULE_14__);
-/* harmony import */ var bpmnlint_rules_superfluous_gateway__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! bpmnlint/rules/superfluous-gateway */ "./node_modules/bpmnlint/rules/superfluous-gateway.js");
-/* harmony import */ var bpmnlint_rules_superfluous_gateway__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_superfluous_gateway__WEBPACK_IMPORTED_MODULE_15__);
-/* harmony import */ var bpmnlint_plugin_camunda_rules_avoid_lanes__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! bpmnlint-plugin-camunda/rules/avoid-lanes */ "./node_modules/bpmnlint-plugin-camunda/rules/avoid-lanes.js");
-/* harmony import */ var bpmnlint_plugin_camunda_rules_avoid_lanes__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_camunda_rules_avoid_lanes__WEBPACK_IMPORTED_MODULE_16__);
-/* harmony import */ var bpmnlint_plugin_camunda_rules_forking_conditions__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! bpmnlint-plugin-camunda/rules/forking-conditions */ "./node_modules/bpmnlint-plugin-camunda/rules/forking-conditions.js");
-/* harmony import */ var bpmnlint_plugin_camunda_rules_forking_conditions__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_camunda_rules_forking_conditions__WEBPACK_IMPORTED_MODULE_17__);
-/* harmony import */ var bpmnlint_plugin_camunda_rules_no_collapsed_sub_processes__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! bpmnlint-plugin-camunda/rules/no-collapsed-sub-processes */ "./node_modules/bpmnlint-plugin-camunda/rules/no-collapsed-sub-processes.js");
-/* harmony import */ var bpmnlint_plugin_camunda_rules_no_collapsed_sub_processes__WEBPACK_IMPORTED_MODULE_18___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_camunda_rules_no_collapsed_sub_processes__WEBPACK_IMPORTED_MODULE_18__);
-/* harmony import */ var bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! bpmnlint-plugin-custom/rules/no-manual-task */ "./bpmnlint-plugin-custom/rules/no-manual-task.js");
-/* harmony import */ var bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_19___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_19__);
-/* harmony import */ var bpmnlint_plugin_custom_rules_script_format__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! bpmnlint-plugin-custom/rules/script-format */ "./bpmnlint-plugin-custom/rules/script-format.js");
-/* harmony import */ var bpmnlint_plugin_custom_rules_script_format__WEBPACK_IMPORTED_MODULE_20___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_script_format__WEBPACK_IMPORTED_MODULE_20__);
+/* harmony import */ var bpmnlint_rules_label_required__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! bpmnlint/rules/label-required */ "./node_modules/bpmnlint/rules/label-required.js");
+/* harmony import */ var bpmnlint_rules_label_required__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_label_required__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var bpmnlint_rules_no_bpmndi__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! bpmnlint/rules/no-bpmndi */ "./node_modules/bpmnlint/rules/no-bpmndi.js");
+/* harmony import */ var bpmnlint_rules_no_bpmndi__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_no_bpmndi__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var bpmnlint_rules_no_complex_gateway__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! bpmnlint/rules/no-complex-gateway */ "./node_modules/bpmnlint/rules/no-complex-gateway.js");
+/* harmony import */ var bpmnlint_rules_no_complex_gateway__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_no_complex_gateway__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var bpmnlint_rules_no_disconnected__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! bpmnlint/rules/no-disconnected */ "./node_modules/bpmnlint/rules/no-disconnected.js");
+/* harmony import */ var bpmnlint_rules_no_disconnected__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_no_disconnected__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var bpmnlint_rules_no_duplicate_sequence_flows__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! bpmnlint/rules/no-duplicate-sequence-flows */ "./node_modules/bpmnlint/rules/no-duplicate-sequence-flows.js");
+/* harmony import */ var bpmnlint_rules_no_duplicate_sequence_flows__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_no_duplicate_sequence_flows__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var bpmnlint_rules_no_gateway_join_fork__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! bpmnlint/rules/no-gateway-join-fork */ "./node_modules/bpmnlint/rules/no-gateway-join-fork.js");
+/* harmony import */ var bpmnlint_rules_no_gateway_join_fork__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_no_gateway_join_fork__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var bpmnlint_rules_no_implicit_split__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! bpmnlint/rules/no-implicit-split */ "./node_modules/bpmnlint/rules/no-implicit-split.js");
+/* harmony import */ var bpmnlint_rules_no_implicit_split__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_no_implicit_split__WEBPACK_IMPORTED_MODULE_10__);
+/* harmony import */ var bpmnlint_rules_no_inclusive_gateway__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! bpmnlint/rules/no-inclusive-gateway */ "./node_modules/bpmnlint/rules/no-inclusive-gateway.js");
+/* harmony import */ var bpmnlint_rules_no_inclusive_gateway__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_no_inclusive_gateway__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var bpmnlint_rules_single_blank_start_event__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! bpmnlint/rules/single-blank-start-event */ "./node_modules/bpmnlint/rules/single-blank-start-event.js");
+/* harmony import */ var bpmnlint_rules_single_blank_start_event__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_single_blank_start_event__WEBPACK_IMPORTED_MODULE_12__);
+/* harmony import */ var bpmnlint_rules_single_event_definition__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! bpmnlint/rules/single-event-definition */ "./node_modules/bpmnlint/rules/single-event-definition.js");
+/* harmony import */ var bpmnlint_rules_single_event_definition__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_single_event_definition__WEBPACK_IMPORTED_MODULE_13__);
+/* harmony import */ var bpmnlint_rules_start_event_required__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! bpmnlint/rules/start-event-required */ "./node_modules/bpmnlint/rules/start-event-required.js");
+/* harmony import */ var bpmnlint_rules_start_event_required__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_start_event_required__WEBPACK_IMPORTED_MODULE_14__);
+/* harmony import */ var bpmnlint_rules_sub_process_blank_start_event__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! bpmnlint/rules/sub-process-blank-start-event */ "./node_modules/bpmnlint/rules/sub-process-blank-start-event.js");
+/* harmony import */ var bpmnlint_rules_sub_process_blank_start_event__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_sub_process_blank_start_event__WEBPACK_IMPORTED_MODULE_15__);
+/* harmony import */ var bpmnlint_rules_superfluous_gateway__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! bpmnlint/rules/superfluous-gateway */ "./node_modules/bpmnlint/rules/superfluous-gateway.js");
+/* harmony import */ var bpmnlint_rules_superfluous_gateway__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_superfluous_gateway__WEBPACK_IMPORTED_MODULE_16__);
+/* harmony import */ var bpmnlint_plugin_camunda_rules_avoid_lanes__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! bpmnlint-plugin-camunda/rules/avoid-lanes */ "./node_modules/bpmnlint-plugin-camunda/rules/avoid-lanes.js");
+/* harmony import */ var bpmnlint_plugin_camunda_rules_avoid_lanes__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_camunda_rules_avoid_lanes__WEBPACK_IMPORTED_MODULE_17__);
+/* harmony import */ var bpmnlint_plugin_camunda_rules_forking_conditions__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! bpmnlint-plugin-camunda/rules/forking-conditions */ "./node_modules/bpmnlint-plugin-camunda/rules/forking-conditions.js");
+/* harmony import */ var bpmnlint_plugin_camunda_rules_forking_conditions__WEBPACK_IMPORTED_MODULE_18___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_camunda_rules_forking_conditions__WEBPACK_IMPORTED_MODULE_18__);
+/* harmony import */ var bpmnlint_plugin_camunda_rules_no_collapsed_sub_processes__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! bpmnlint-plugin-camunda/rules/no-collapsed-sub-processes */ "./node_modules/bpmnlint-plugin-camunda/rules/no-collapsed-sub-processes.js");
+/* harmony import */ var bpmnlint_plugin_camunda_rules_no_collapsed_sub_processes__WEBPACK_IMPORTED_MODULE_19___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_camunda_rules_no_collapsed_sub_processes__WEBPACK_IMPORTED_MODULE_19__);
+/* harmony import */ var bpmnlint_plugin_custom_rules_script_task__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! bpmnlint-plugin-custom/rules/script-task */ "./bpmnlint-plugin-custom/rules/script-task.js");
+/* harmony import */ var bpmnlint_plugin_custom_rules_script_task__WEBPACK_IMPORTED_MODULE_20___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_script_task__WEBPACK_IMPORTED_MODULE_20__);
 /* harmony import */ var bpmnlint_plugin_custom_rules_service_task__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! bpmnlint-plugin-custom/rules/service-task */ "./bpmnlint-plugin-custom/rules/service-task.js");
 /* harmony import */ var bpmnlint_plugin_custom_rules_service_task__WEBPACK_IMPORTED_MODULE_21___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_service_task__WEBPACK_IMPORTED_MODULE_21__);
 
@@ -785,6 +755,7 @@ const rules = {
   "end-event-required": "error",
   "event-sub-process-typed-start-event": "error",
   "fake-join": "warn",
+  "label-required": "on",
   "no-bpmndi": "error",
   "no-complex-gateway": "error",
   "no-disconnected": "error",
@@ -800,8 +771,7 @@ const rules = {
   "camunda/avoid-lanes": "warn",
   "camunda/forking-conditions": "error",
   "camunda/no-collapsed-sub-processes": "error",
-  "custom/no-manual-task": "warn",
-  "custom/script-format": "error",
+  "custom/script-task": "error",
   "custom/service-task": "error"
 };
 
@@ -833,55 +803,55 @@ cache['bpmnlint/event-sub-process-typed-start-event'] = (bpmnlint_rules_event_su
 cache['bpmnlint/fake-join'] = (bpmnlint_rules_fake_join__WEBPACK_IMPORTED_MODULE_3___default());
 
 
-cache['bpmnlint/no-bpmndi'] = (bpmnlint_rules_no_bpmndi__WEBPACK_IMPORTED_MODULE_4___default());
+cache['bpmnlint/label-required'] = (bpmnlint_rules_label_required__WEBPACK_IMPORTED_MODULE_4___default());
 
 
-cache['bpmnlint/no-complex-gateway'] = (bpmnlint_rules_no_complex_gateway__WEBPACK_IMPORTED_MODULE_5___default());
+cache['bpmnlint/no-bpmndi'] = (bpmnlint_rules_no_bpmndi__WEBPACK_IMPORTED_MODULE_5___default());
 
 
-cache['bpmnlint/no-disconnected'] = (bpmnlint_rules_no_disconnected__WEBPACK_IMPORTED_MODULE_6___default());
+cache['bpmnlint/no-complex-gateway'] = (bpmnlint_rules_no_complex_gateway__WEBPACK_IMPORTED_MODULE_6___default());
 
 
-cache['bpmnlint/no-duplicate-sequence-flows'] = (bpmnlint_rules_no_duplicate_sequence_flows__WEBPACK_IMPORTED_MODULE_7___default());
+cache['bpmnlint/no-disconnected'] = (bpmnlint_rules_no_disconnected__WEBPACK_IMPORTED_MODULE_7___default());
 
 
-cache['bpmnlint/no-gateway-join-fork'] = (bpmnlint_rules_no_gateway_join_fork__WEBPACK_IMPORTED_MODULE_8___default());
+cache['bpmnlint/no-duplicate-sequence-flows'] = (bpmnlint_rules_no_duplicate_sequence_flows__WEBPACK_IMPORTED_MODULE_8___default());
 
 
-cache['bpmnlint/no-implicit-split'] = (bpmnlint_rules_no_implicit_split__WEBPACK_IMPORTED_MODULE_9___default());
+cache['bpmnlint/no-gateway-join-fork'] = (bpmnlint_rules_no_gateway_join_fork__WEBPACK_IMPORTED_MODULE_9___default());
 
 
-cache['bpmnlint/no-inclusive-gateway'] = (bpmnlint_rules_no_inclusive_gateway__WEBPACK_IMPORTED_MODULE_10___default());
+cache['bpmnlint/no-implicit-split'] = (bpmnlint_rules_no_implicit_split__WEBPACK_IMPORTED_MODULE_10___default());
 
 
-cache['bpmnlint/single-blank-start-event'] = (bpmnlint_rules_single_blank_start_event__WEBPACK_IMPORTED_MODULE_11___default());
+cache['bpmnlint/no-inclusive-gateway'] = (bpmnlint_rules_no_inclusive_gateway__WEBPACK_IMPORTED_MODULE_11___default());
 
 
-cache['bpmnlint/single-event-definition'] = (bpmnlint_rules_single_event_definition__WEBPACK_IMPORTED_MODULE_12___default());
+cache['bpmnlint/single-blank-start-event'] = (bpmnlint_rules_single_blank_start_event__WEBPACK_IMPORTED_MODULE_12___default());
 
 
-cache['bpmnlint/start-event-required'] = (bpmnlint_rules_start_event_required__WEBPACK_IMPORTED_MODULE_13___default());
+cache['bpmnlint/single-event-definition'] = (bpmnlint_rules_single_event_definition__WEBPACK_IMPORTED_MODULE_13___default());
 
 
-cache['bpmnlint/sub-process-blank-start-event'] = (bpmnlint_rules_sub_process_blank_start_event__WEBPACK_IMPORTED_MODULE_14___default());
+cache['bpmnlint/start-event-required'] = (bpmnlint_rules_start_event_required__WEBPACK_IMPORTED_MODULE_14___default());
 
 
-cache['bpmnlint/superfluous-gateway'] = (bpmnlint_rules_superfluous_gateway__WEBPACK_IMPORTED_MODULE_15___default());
+cache['bpmnlint/sub-process-blank-start-event'] = (bpmnlint_rules_sub_process_blank_start_event__WEBPACK_IMPORTED_MODULE_15___default());
 
 
-cache['bpmnlint-plugin-camunda/avoid-lanes'] = (bpmnlint_plugin_camunda_rules_avoid_lanes__WEBPACK_IMPORTED_MODULE_16___default());
+cache['bpmnlint/superfluous-gateway'] = (bpmnlint_rules_superfluous_gateway__WEBPACK_IMPORTED_MODULE_16___default());
 
 
-cache['bpmnlint-plugin-camunda/forking-conditions'] = (bpmnlint_plugin_camunda_rules_forking_conditions__WEBPACK_IMPORTED_MODULE_17___default());
+cache['bpmnlint-plugin-camunda/avoid-lanes'] = (bpmnlint_plugin_camunda_rules_avoid_lanes__WEBPACK_IMPORTED_MODULE_17___default());
 
 
-cache['bpmnlint-plugin-camunda/no-collapsed-sub-processes'] = (bpmnlint_plugin_camunda_rules_no_collapsed_sub_processes__WEBPACK_IMPORTED_MODULE_18___default());
+cache['bpmnlint-plugin-camunda/forking-conditions'] = (bpmnlint_plugin_camunda_rules_forking_conditions__WEBPACK_IMPORTED_MODULE_18___default());
 
 
-cache['bpmnlint-plugin-custom/no-manual-task'] = (bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_19___default());
+cache['bpmnlint-plugin-camunda/no-collapsed-sub-processes'] = (bpmnlint_plugin_camunda_rules_no_collapsed_sub_processes__WEBPACK_IMPORTED_MODULE_19___default());
 
 
-cache['bpmnlint-plugin-custom/script-format'] = (bpmnlint_plugin_custom_rules_script_format__WEBPACK_IMPORTED_MODULE_20___default());
+cache['bpmnlint-plugin-custom/script-task'] = (bpmnlint_plugin_custom_rules_script_task__WEBPACK_IMPORTED_MODULE_20___default());
 
 
 cache['bpmnlint-plugin-custom/service-task'] = (bpmnlint_plugin_custom_rules_service_task__WEBPACK_IMPORTED_MODULE_21___default());
@@ -1862,6 +1832,87 @@ function disallowNodeType(type) {
 }
 
 module.exports.disallowNodeType = disallowNodeType;
+
+/***/ }),
+
+/***/ "./node_modules/bpmnlint/rules/label-required.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/bpmnlint/rules/label-required.js ***!
+  \*******************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const {
+  is,
+  isAny
+} = __webpack_require__(/*! bpmnlint-utils */ "./node_modules/bpmnlint-utils/dist/index.esm.js");
+
+
+/**
+ * A rule that checks the presence of a label.
+ */
+module.exports = function() {
+
+  function check(node, reporter) {
+
+    if (isAny(node, [
+      'bpmn:ParallelGateway',
+      'bpmn:EventBasedGateway'
+    ])) {
+      return;
+    }
+
+    // ignore joining gateways
+    if (is(node, 'bpmn:Gateway') && !isForking(node)) {
+      return;
+    }
+
+    if (is(node, 'bpmn:BoundaryEvent')) {
+      return;
+    }
+
+    // ignore sub-processes
+    if (is(node, 'bpmn:SubProcess')) {
+
+      // TODO(nikku): better ignore expanded sub-processes only
+      return;
+    }
+
+    // ignore sequence flow without condition
+    if (is(node, 'bpmn:SequenceFlow') && !hasCondition(node)) {
+      return;
+    }
+
+    // ignore data objects and artifacts for now
+    if (isAny(node, [
+      'bpmn:FlowNode',
+      'bpmn:SequenceFlow',
+      'bpmn:Participant',
+      'bpmn:Lane'
+    ])) {
+
+      const name = (node.name || '').trim();
+
+      if (name.length === 0) {
+        reporter.report(node.id, 'Element is missing label/name');
+      }
+    }
+  }
+
+  return { check };
+};
+
+
+// helpers ////////////////////////
+
+function isForking(node) {
+  const outgoing = node.outgoing || [];
+
+  return outgoing.length > 1;
+}
+
+function hasCondition(node) {
+  return node.conditionExpression;
+}
 
 /***/ }),
 

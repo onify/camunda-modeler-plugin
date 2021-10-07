@@ -6,7 +6,7 @@
   "main": "index.js",
   "author": {
     "name": "Onify",
-    "url": "https://github.com/onify/camunda-modeler-plugin"
+    "url": "https://github.com/onify/onify-camunda-modeler-plugin"
   },
   "license": "MIT",
   "dependencies": {
