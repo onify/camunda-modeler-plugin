@@ -3,7 +3,8 @@ module.exports = {
     recommended: {
       rules: {
         'no-manual-task': 'error',
-        'script-format': 'error'
+        'script-format': 'error',
+        'service-task': 'error'
       }
     }
   }

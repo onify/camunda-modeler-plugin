@@ -66,6 +66,48 @@ module.exports = function() {
 
 /***/ }),
 
+/***/ "./bpmnlint-plugin-custom/rules/service-task.js":
+/*!******************************************************!*\
+  !*** ./bpmnlint-plugin-custom/rules/service-task.js ***!
+  \******************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const {
+  is
+} = __webpack_require__(/*! bpmnlint-utils */ "./node_modules/bpmnlint-utils/dist/index.esm.js");
+
+
+/**
+ * Rule that reports missing Implementation on bpmn:ServiceTask.
+ * Implementation only supports Connector
+ * Connector Id only supports our service tasks (eg. httpRequest, onifyApiRequest, etc)
+ */
+module.exports = function() {
+
+  function check(node, reporter) {
+    if (is(node, 'bpmn:ServiceTask')) {
+      if (!node.extensionElements || !node.extensionElements.values || !node.extensionElements.values.length || !is(node.extensionElements.values[0], 'camunda:Connector')) {
+        reporter.report(node.id, 'Implementation must be set');
+        return reporter.report(node.id, 'Implementation only supports "Connector"');
+      }
+
+      if (!node.extensionElements.values[0].connectorId) {
+        return reporter.report(node.id, `Connector Id must be set ${JSON.stringify(node)}`);
+      }
+      if (node.extensionElements.values[0].connectorId !== 'httpRequest' && node.extensionElements.values[0].connectorId !== 'onifyApiRequest') {
+        return reporter.report(node.id, 'Connector Id only supports our service tasks (eg. httpRequest, onifyApiRequest, etc)');
+      }
+    }
+  }
+
+  return {
+    check: check
+  };
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/bpmn-js-bpmnlint/dist/index.esm.js":
 /*!*********************************************************!*\
   !*** ./node_modules/bpmn-js-bpmnlint/dist/index.esm.js ***!
@@ -677,6 +719,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_19___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_19__);
 /* harmony import */ var bpmnlint_plugin_custom_rules_script_format__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! bpmnlint-plugin-custom/rules/script-format */ "./bpmnlint-plugin-custom/rules/script-format.js");
 /* harmony import */ var bpmnlint_plugin_custom_rules_script_format__WEBPACK_IMPORTED_MODULE_20___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_script_format__WEBPACK_IMPORTED_MODULE_20__);
+/* harmony import */ var bpmnlint_plugin_custom_rules_service_task__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! bpmnlint-plugin-custom/rules/service-task */ "./bpmnlint-plugin-custom/rules/service-task.js");
+/* harmony import */ var bpmnlint_plugin_custom_rules_service_task__WEBPACK_IMPORTED_MODULE_21___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_service_task__WEBPACK_IMPORTED_MODULE_21__);
 
 const cache = {};
 
@@ -728,7 +772,8 @@ const rules = {
   "camunda/forking-conditions": "error",
   "camunda/no-collapsed-sub-processes": "error",
   "custom/no-manual-task": "warn",
-  "custom/script-format": "error"
+  "custom/script-format": "error",
+  "custom/service-task": "error"
 };
 
 const config = {
@@ -808,6 +853,9 @@ cache['bpmnlint-plugin-custom/no-manual-task'] = (bpmnlint_plugin_custom_rules_n
 
 
 cache['bpmnlint-plugin-custom/script-format'] = (bpmnlint_plugin_custom_rules_script_format__WEBPACK_IMPORTED_MODULE_20___default());
+
+
+cache['bpmnlint-plugin-custom/service-task'] = (bpmnlint_plugin_custom_rules_service_task__WEBPACK_IMPORTED_MODULE_21___default());
 
 /***/ }),
 
