@@ -2,5 +2,6 @@
 
 module.exports = {
   name: 'Onify Plugin',
-  style: './style/style.css'
+  script: './dist/client.js',
+  style: './dist/style.css'
 };

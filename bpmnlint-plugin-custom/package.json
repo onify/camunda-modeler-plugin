@@ -1,0 +1,15 @@
+{
+  "name": "bpmnlint-plugin-custom",
+  "version": "0.1.0",
+  "private": true,
+  "description": "bpmnlint custom rules plug-in",
+  "main": "index.js",
+  "author": {
+    "name": "Onify",
+    "url": "https://github.com/onify/camunda-modeler-plugin"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "bpmnlint-utils": "^1.0.1"
+  }
+}
