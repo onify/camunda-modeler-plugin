@@ -81,7 +81,6 @@ module.exports = function() {
       }
 
       const url = connector.inputOutput.inputParameters.find((input) => input.name === 'url');
-      const responseType = connector.inputOutput.inputParameters.find((input) => input.name === 'responseType');
       const method = connector.inputOutput.inputParameters.find((input) => input.name === 'method');
       const json = connector.inputOutput.inputParameters.find((input) => input.name === 'json');
 
@@ -94,7 +93,7 @@ module.exports = function() {
       }
 
       if (method && (method.value.toUpperCase() === 'POST' || method.value.toUpperCase() === 'PUT' || method.value.toUpperCase() === 'PATCH') && !json) {
-        return reporter.report(node.id, 'Connector input parameters `json` must be defined when method is `POST`, `PUT` or `PATCH`');
+        return reporter.report(node.id, 'Connector input parameters `json` must be defined when `method` is POST, PUT or PATCH');
       }
     }
   }
