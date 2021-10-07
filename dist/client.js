@@ -31,6 +31,41 @@ module.exports = function() {
 
 /***/ }),
 
+/***/ "./bpmnlint-plugin-custom/rules/script-format.js":
+/*!*******************************************************!*\
+  !*** ./bpmnlint-plugin-custom/rules/script-format.js ***!
+  \*******************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const {
+  is
+} = __webpack_require__(/*! bpmnlint-utils */ "./node_modules/bpmnlint-utils/dist/index.esm.js");
+
+
+/**
+ * Rule that reports missing Script format on bpmn:ScriptTask.
+ * Script format can supports js or javascript
+ */
+module.exports = function() {
+
+  function check(node, reporter) {
+    if (is(node, 'bpmn:ScriptTask') && (!node.scriptFormat || (node.scriptFormat !== 'js' && node.scriptFormat !== 'javascript'))) {
+      if (!node.scriptFormat) {
+        reporter.report(node.id, 'Script format must be set');
+      } else {
+        reporter.report(node.id, 'Script format can supports js or javascript');
+      }
+    }
+  }
+
+  return {
+    check: check
+  };
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/bpmn-js-bpmnlint/dist/index.esm.js":
 /*!*********************************************************!*\
   !*** ./node_modules/bpmn-js-bpmnlint/dist/index.esm.js ***!
@@ -640,6 +675,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var bpmnlint_plugin_camunda_rules_no_collapsed_sub_processes__WEBPACK_IMPORTED_MODULE_18___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_camunda_rules_no_collapsed_sub_processes__WEBPACK_IMPORTED_MODULE_18__);
 /* harmony import */ var bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! bpmnlint-plugin-custom/rules/no-manual-task */ "./bpmnlint-plugin-custom/rules/no-manual-task.js");
 /* harmony import */ var bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_19___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_19__);
+/* harmony import */ var bpmnlint_plugin_custom_rules_script_format__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! bpmnlint-plugin-custom/rules/script-format */ "./bpmnlint-plugin-custom/rules/script-format.js");
+/* harmony import */ var bpmnlint_plugin_custom_rules_script_format__WEBPACK_IMPORTED_MODULE_20___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_script_format__WEBPACK_IMPORTED_MODULE_20__);
 
 const cache = {};
 
@@ -690,7 +727,8 @@ const rules = {
   "camunda/avoid-lanes": "warn",
   "camunda/forking-conditions": "error",
   "camunda/no-collapsed-sub-processes": "error",
-  "custom/no-manual-task": "warn"
+  "custom/no-manual-task": "warn",
+  "custom/script-format": "error"
 };
 
 const config = {
@@ -767,6 +805,9 @@ cache['bpmnlint-plugin-camunda/no-collapsed-sub-processes'] = (bpmnlint_plugin_c
 
 
 cache['bpmnlint-plugin-custom/no-manual-task'] = (bpmnlint_plugin_custom_rules_no_manual_task__WEBPACK_IMPORTED_MODULE_19___default());
+
+
+cache['bpmnlint-plugin-custom/script-format'] = (bpmnlint_plugin_custom_rules_script_format__WEBPACK_IMPORTED_MODULE_20___default());
 
 /***/ }),
 
