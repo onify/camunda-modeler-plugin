@@ -9,9 +9,9 @@ import defaultConfig from '../.bpmnlintrc';
 
 const persistLintingStateModule = {
   __init__: [
-    [ 'eventBus', function(eventBus) {
+    [ 'eventBus', function (eventBus) {
 
-      eventBus.on('linting.toggle', function(event) {
+      eventBus.on('linting.toggle', function (event) {
         const {
           active
         } = event;
@@ -21,11 +21,11 @@ const persistLintingStateModule = {
 
     } ]
   ]
-}
+};
 
 registerBpmnJSPlugin({
   __init__: [
-    function(linting) {
+    function (linting) {
       linting.setLinterConfig(defaultConfig);
     }
   ]
@@ -49,7 +49,7 @@ registerClientPlugin(config => {
       bpmnlint: defaultConfig,
       active: getLintingActive()
     }
-  }
+  };
 }, 'bpmn.modeler.configure');
 
 
@@ -58,11 +58,13 @@ registerClientPlugin(config => {
 const LINTING_STATE_KEY = 'camunda-modeler-linter-plugin.active';
 
 function getLintingActive() {
+  // eslint-disable-next-line
   const str = window.localStorage.getItem(LINTING_STATE_KEY);
 
   return str && JSON.parse(str) || false;
 }
 
 function setLintingActive(active) {
+  // eslint-disable-next-line
   window.localStorage.setItem(LINTING_STATE_KEY, JSON.stringify(active));
 }

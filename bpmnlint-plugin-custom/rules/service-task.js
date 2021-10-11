@@ -8,11 +8,11 @@ const {
  * Implementation only supports Connector
  * Connector Id only supports our service tasks (eg. httpRequest, onifyApiRequest, etc)
  */
-module.exports = function() {
+module.exports = function () {
 
   function findElement(elements, name) {
     if (!elements || !elements.length) return false;
-    return elements.find((element) => is(element, name))
+    return elements.find((element) => is(element, name));
   }
 
   function check(node, reporter) {
@@ -37,6 +37,7 @@ module.exports = function() {
       }
 
       const url = connector.inputOutput.inputParameters.find((input) => input.name === 'url');
+      const responseType = connector.inputOutput.inputParameters.find((input) => input.name === 'responseType');
       const method = connector.inputOutput.inputParameters.find((input) => input.name === 'method');
       const json = connector.inputOutput.inputParameters.find((input) => input.name === 'json');
 

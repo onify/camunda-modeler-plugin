@@ -7,7 +7,7 @@ const {
  * Rule that reports missing Script format on bpmn:ScriptTask.
  * Script format can supports js or javascript
  */
-module.exports = function() {
+module.exports = function () {
 
   function check(node, reporter) {
     if (is(node, 'bpmn:ScriptTask') && (!node.scriptFormat || (node.scriptFormat !== 'js' && node.scriptFormat !== 'javascript'))) {
