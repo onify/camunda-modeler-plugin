@@ -5,6 +5,7 @@
     "plugin:custom/recommended"
   ],
   "rules": {
-    "label-required": "on"
+    "label-required": "on",
+    "camunda/avoid-lanes": "off"
   }
 }

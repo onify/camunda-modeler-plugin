@@ -1,15 +1,13 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./bpmnlint-plugin-custom/rules/script-task.js":
-/*!*****************************************************!*\
-  !*** ./bpmnlint-plugin-custom/rules/script-task.js ***!
-  \*****************************************************/
+/***/ "./bpmnlint-plugin-custom/rules/script-task-error.js":
+/*!***********************************************************!*\
+  !*** ./bpmnlint-plugin-custom/rules/script-task-error.js ***!
+  \***********************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-const {
-  is
-} = __webpack_require__(/*! bpmnlint-utils */ "./node_modules/bpmnlint-utils/dist/index.esm.js");
+const { is } = __webpack_require__(/*! bpmnlint-utils */ "./node_modules/bpmnlint-utils/dist/index.esm.js");
 
 
 /**
@@ -19,11 +17,174 @@ const {
 module.exports = function () {
 
   function check(node, reporter) {
-    if (is(node, 'bpmn:ScriptTask') && (!node.scriptFormat || (node.scriptFormat !== 'js' && node.scriptFormat !== 'javascript'))) {
+    if (is(node, 'bpmn:ScriptTask')) {
       if (!node.scriptFormat) {
-        reporter.report(node.id, 'Script format must be defined');
-      } else {
-        reporter.report(node.id, 'Only `js`/`javascript` are supported script formats');
+        return reporter.report(node.id, 'Script format must be defined');
+      }
+
+      if (node.scriptFormat !== 'js' && node.scriptFormat !== 'javascript') {
+        return reporter.report(node.id, 'Only `js/javascript` are supported script formats');
+      }
+
+      if (!node.script) {
+        reporter.report(node.id, 'Script must be defined');
+      }
+    }
+  }
+
+  return {
+    check: check
+  };
+};
+
+
+/***/ }),
+
+/***/ "./bpmnlint-plugin-custom/rules/script-task-warn.js":
+/*!**********************************************************!*\
+  !*** ./bpmnlint-plugin-custom/rules/script-task-warn.js ***!
+  \**********************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const { is } = __webpack_require__(/*! bpmnlint-utils */ "./node_modules/bpmnlint-utils/dist/index.esm.js");
+
+
+/**
+ * Rule that reports missing Script format on bpmn:ScriptTask.
+ * Script format can supports js or javascript
+ */
+module.exports = function () {
+
+  function check(node, reporter) {
+    if (is(node, 'bpmn:ScriptTask') && (node.scriptFormat === 'js' || node.scriptFormat === 'javascript')) {
+      if (node.script && !node.script.includes('next()')) {
+        reporter.report(node.id, 'next() functions does not exist');
+      }
+    }
+  }
+
+  return {
+    check: check
+  };
+};
+
+
+/***/ }),
+
+/***/ "./bpmnlint-plugin-custom/rules/service-task-httpRequest-error.js":
+/*!************************************************************************!*\
+  !*** ./bpmnlint-plugin-custom/rules/service-task-httpRequest-error.js ***!
+  \************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const { is } = __webpack_require__(/*! bpmnlint-utils */ "./node_modules/bpmnlint-utils/dist/index.esm.js");
+const { findElement } = __webpack_require__(/*! ../utils */ "./bpmnlint-plugin-custom/utils.js");
+
+/**
+ * Rule that reports missing responseType on bpmn:ServiceTask.
+ */
+module.exports = function () {
+
+  function check(node, reporter) {
+    if (is(node, 'bpmn:ServiceTask')) {
+      const connector = findElement(node.extensionElements && node.extensionElements.values, 'camunda:Connector');
+
+      if (!connector || connector.connectorId !== 'httpRequest') {
+        return;
+      }
+
+      const url = connector.inputOutput && connector.inputOutput.inputParameters && connector.inputOutput.inputParameters.find((input) => input.name === 'url');
+      const json = connector.inputOutput && connector.inputOutput.inputParameters && connector.inputOutput.inputParameters.find((input) => input.name === 'json');
+      const method = connector.inputOutput && connector.inputOutput.inputParameters && connector.inputOutput.inputParameters.find((input) => input.name === 'method');
+
+      if (!url) {
+        reporter.report(node.id, 'Connector input parameter `url` must be defined');
+      }
+
+      if (method && (method.value.toUpperCase() === 'POST' || method.value.toUpperCase() === 'PUT' || method.value.toUpperCase() === 'PATCH') && !json) {
+        reporter.report(node.id, 'Connector input parameter `json` must be defined when `method` is POST, PUT or PATCH');
+      }
+    }
+  }
+
+  return {
+    check: check
+  };
+};
+
+
+/***/ }),
+
+/***/ "./bpmnlint-plugin-custom/rules/service-task-httpRequest-warn.js":
+/*!***********************************************************************!*\
+  !*** ./bpmnlint-plugin-custom/rules/service-task-httpRequest-warn.js ***!
+  \***********************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const { is } = __webpack_require__(/*! bpmnlint-utils */ "./node_modules/bpmnlint-utils/dist/index.esm.js");
+const { findElement } = __webpack_require__(/*! ../utils */ "./bpmnlint-plugin-custom/utils.js");
+
+/**
+ * Rule that reports missing responseType on bpmn:ServiceTask.
+ */
+module.exports = function () {
+
+  function check(node, reporter) {
+    if (is(node, 'bpmn:ServiceTask')) {
+      const connector = findElement(node.extensionElements && node.extensionElements.values, 'camunda:Connector');
+
+      if (!connector || connector.connectorId !== 'httpRequest') {
+        return;
+      }
+
+      const responseType = connector.inputOutput && connector.inputOutput.inputParameters && connector.inputOutput.inputParameters.find((input) => input.name === 'responseType');
+
+      if (!responseType) {
+        reporter.report(node.id, 'Connector input parameter `responseType` is not defined');
+      }
+    }
+  }
+
+  return {
+    check: check
+  };
+};
+
+
+/***/ }),
+
+/***/ "./bpmnlint-plugin-custom/rules/service-task-onifyApiRequest-error.js":
+/*!****************************************************************************!*\
+  !*** ./bpmnlint-plugin-custom/rules/service-task-onifyApiRequest-error.js ***!
+  \****************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const { is } = __webpack_require__(/*! bpmnlint-utils */ "./node_modules/bpmnlint-utils/dist/index.esm.js");
+const { findElement } = __webpack_require__(/*! ../utils */ "./bpmnlint-plugin-custom/utils.js");
+
+/**
+ * Rule for onifyApiRequest and onifyElevatedApiRequest
+ */
+module.exports = function () {
+
+  function check(node, reporter) {
+    if (is(node, 'bpmn:ServiceTask')) {
+      const connector = findElement(node.extensionElements && node.extensionElements.values, 'camunda:Connector');
+
+      if (!connector || (connector.connectorId !== 'onifyApiRequest' && connector.connectorId !== 'onifyElevatedApiRequest')) {
+        return;
+      }
+
+      const url = connector.inputOutput && connector.inputOutput.inputParameters && connector.inputOutput.inputParameters.find((input) => input.name === 'url');
+      const payload = connector.inputOutput && connector.inputOutput.inputParameters && connector.inputOutput.inputParameters.find((input) => input.name === 'payload');
+      const method = connector.inputOutput && connector.inputOutput.inputParameters && connector.inputOutput.inputParameters.find((input) => input.name === 'method');
+
+      if (!url) {
+        reporter.report(node.id, 'Connector input parameter `url` must be defined');
+      }
+
+      if (method && (method.value.toUpperCase() === 'POST' || method.value.toUpperCase() === 'PUT' || method.value.toUpperCase() === 'PATCH') && !payload) {
+        reporter.report(node.id, 'Connector input parameter `payload` must be defined when `method` is POST, PUT or PATCH');
       }
     }
   }
@@ -42,22 +203,15 @@ module.exports = function () {
   \******************************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
-const {
-  is
-} = __webpack_require__(/*! bpmnlint-utils */ "./node_modules/bpmnlint-utils/dist/index.esm.js");
-
+const { is } = __webpack_require__(/*! bpmnlint-utils */ "./node_modules/bpmnlint-utils/dist/index.esm.js");
+const { findElement } = __webpack_require__(/*! ../utils */ "./bpmnlint-plugin-custom/utils.js");
 
 /**
  * Rule that reports missing Implementation on bpmn:ServiceTask.
  * Implementation only supports Connector
- * Connector Id only supports our service tasks (eg. httpRequest, onifyApiRequest, etc)
+ * Connector Id only supports our service tasks (eg. httpRequest, onifyApiRequest, onifyElevatedApiRequest, etc)
  */
 module.exports = function () {
-
-  function findElement(elements, name) {
-    if (!elements || !elements.length) return false;
-    return elements.find((element) => is(element, name));
-  }
 
   function check(node, reporter) {
     if (is(node, 'bpmn:ServiceTask')) {
@@ -75,27 +229,6 @@ module.exports = function () {
       if (connector.connectorId !== 'httpRequest' && connector.connectorId !== 'onifyApiRequest' && connector.connectorId !== 'onifyElevatedApiRequest') {
         return reporter.report(node.id, 'Connector Id only supports `httpRequest`, `onifyApiRequest` and `onifyElevatedApiRequest`');
       }
-
-      if (!connector.inputOutput || !connector.inputOutput.inputParameters) {
-        return reporter.report(node.id, 'Connector input parameters `url` and `responseType` must be defined');
-      }
-
-      const url = connector.inputOutput.inputParameters.find((input) => input.name === 'url');
-      const responseType = connector.inputOutput.inputParameters.find((input) => input.name === 'responseType');
-      const method = connector.inputOutput.inputParameters.find((input) => input.name === 'method');
-      const json = connector.inputOutput.inputParameters.find((input) => input.name === 'json');
-
-      if (!url) {
-        return reporter.report(node.id, 'Connector input parameter `url` must be defined');
-      }
-
-      if (!responseType) {
-        return reporter.report(node.id, 'Connector input parameter `responseType` must be defined');
-      }
-
-      if (method && (method.value.toUpperCase() === 'POST' || method.value.toUpperCase() === 'PUT' || method.value.toUpperCase() === 'PATCH') && !json) {
-        return reporter.report(node.id, 'Connector input parameters `json` must be defined when `method` is POST, PUT or PATCH');
-      }
     }
   }
 
@@ -103,6 +236,28 @@ module.exports = function () {
     check: check
   };
 };
+
+
+/***/ }),
+
+/***/ "./bpmnlint-plugin-custom/utils.js":
+/*!*****************************************!*\
+  !*** ./bpmnlint-plugin-custom/utils.js ***!
+  \*****************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const {
+  is
+} = __webpack_require__(/*! bpmnlint-utils */ "./node_modules/bpmnlint-utils/dist/index.esm.js");
+
+module.exports = {
+  findElement,
+};
+
+function findElement(elements, name) {
+  if (!elements || !elements.length) return false;
+  return elements.find((element) => is(element, name));
+}
 
 
 /***/ }),
@@ -710,16 +865,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var bpmnlint_rules_sub_process_blank_start_event__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_sub_process_blank_start_event__WEBPACK_IMPORTED_MODULE_15__);
 /* harmony import */ var bpmnlint_rules_superfluous_gateway__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! bpmnlint/rules/superfluous-gateway */ "./node_modules/bpmnlint/rules/superfluous-gateway.js");
 /* harmony import */ var bpmnlint_rules_superfluous_gateway__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_rules_superfluous_gateway__WEBPACK_IMPORTED_MODULE_16__);
-/* harmony import */ var bpmnlint_plugin_camunda_rules_avoid_lanes__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! bpmnlint-plugin-camunda/rules/avoid-lanes */ "./node_modules/bpmnlint-plugin-camunda/rules/avoid-lanes.js");
-/* harmony import */ var bpmnlint_plugin_camunda_rules_avoid_lanes__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_camunda_rules_avoid_lanes__WEBPACK_IMPORTED_MODULE_17__);
-/* harmony import */ var bpmnlint_plugin_camunda_rules_forking_conditions__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! bpmnlint-plugin-camunda/rules/forking-conditions */ "./node_modules/bpmnlint-plugin-camunda/rules/forking-conditions.js");
-/* harmony import */ var bpmnlint_plugin_camunda_rules_forking_conditions__WEBPACK_IMPORTED_MODULE_18___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_camunda_rules_forking_conditions__WEBPACK_IMPORTED_MODULE_18__);
-/* harmony import */ var bpmnlint_plugin_camunda_rules_no_collapsed_sub_processes__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! bpmnlint-plugin-camunda/rules/no-collapsed-sub-processes */ "./node_modules/bpmnlint-plugin-camunda/rules/no-collapsed-sub-processes.js");
-/* harmony import */ var bpmnlint_plugin_camunda_rules_no_collapsed_sub_processes__WEBPACK_IMPORTED_MODULE_19___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_camunda_rules_no_collapsed_sub_processes__WEBPACK_IMPORTED_MODULE_19__);
-/* harmony import */ var bpmnlint_plugin_custom_rules_script_task__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! bpmnlint-plugin-custom/rules/script-task */ "./bpmnlint-plugin-custom/rules/script-task.js");
-/* harmony import */ var bpmnlint_plugin_custom_rules_script_task__WEBPACK_IMPORTED_MODULE_20___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_script_task__WEBPACK_IMPORTED_MODULE_20__);
+/* harmony import */ var bpmnlint_plugin_camunda_rules_forking_conditions__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! bpmnlint-plugin-camunda/rules/forking-conditions */ "./node_modules/bpmnlint-plugin-camunda/rules/forking-conditions.js");
+/* harmony import */ var bpmnlint_plugin_camunda_rules_forking_conditions__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_camunda_rules_forking_conditions__WEBPACK_IMPORTED_MODULE_17__);
+/* harmony import */ var bpmnlint_plugin_camunda_rules_no_collapsed_sub_processes__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! bpmnlint-plugin-camunda/rules/no-collapsed-sub-processes */ "./node_modules/bpmnlint-plugin-camunda/rules/no-collapsed-sub-processes.js");
+/* harmony import */ var bpmnlint_plugin_camunda_rules_no_collapsed_sub_processes__WEBPACK_IMPORTED_MODULE_18___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_camunda_rules_no_collapsed_sub_processes__WEBPACK_IMPORTED_MODULE_18__);
+/* harmony import */ var bpmnlint_plugin_custom_rules_script_task_error__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! bpmnlint-plugin-custom/rules/script-task-error */ "./bpmnlint-plugin-custom/rules/script-task-error.js");
+/* harmony import */ var bpmnlint_plugin_custom_rules_script_task_error__WEBPACK_IMPORTED_MODULE_19___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_script_task_error__WEBPACK_IMPORTED_MODULE_19__);
+/* harmony import */ var bpmnlint_plugin_custom_rules_script_task_warn__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! bpmnlint-plugin-custom/rules/script-task-warn */ "./bpmnlint-plugin-custom/rules/script-task-warn.js");
+/* harmony import */ var bpmnlint_plugin_custom_rules_script_task_warn__WEBPACK_IMPORTED_MODULE_20___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_script_task_warn__WEBPACK_IMPORTED_MODULE_20__);
 /* harmony import */ var bpmnlint_plugin_custom_rules_service_task__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! bpmnlint-plugin-custom/rules/service-task */ "./bpmnlint-plugin-custom/rules/service-task.js");
 /* harmony import */ var bpmnlint_plugin_custom_rules_service_task__WEBPACK_IMPORTED_MODULE_21___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_service_task__WEBPACK_IMPORTED_MODULE_21__);
+/* harmony import */ var bpmnlint_plugin_custom_rules_service_task_httpRequest_error__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! bpmnlint-plugin-custom/rules/service-task-httpRequest-error */ "./bpmnlint-plugin-custom/rules/service-task-httpRequest-error.js");
+/* harmony import */ var bpmnlint_plugin_custom_rules_service_task_httpRequest_error__WEBPACK_IMPORTED_MODULE_22___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_service_task_httpRequest_error__WEBPACK_IMPORTED_MODULE_22__);
+/* harmony import */ var bpmnlint_plugin_custom_rules_service_task_httpRequest_warn__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! bpmnlint-plugin-custom/rules/service-task-httpRequest-warn */ "./bpmnlint-plugin-custom/rules/service-task-httpRequest-warn.js");
+/* harmony import */ var bpmnlint_plugin_custom_rules_service_task_httpRequest_warn__WEBPACK_IMPORTED_MODULE_23___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_service_task_httpRequest_warn__WEBPACK_IMPORTED_MODULE_23__);
+/* harmony import */ var bpmnlint_plugin_custom_rules_service_task_onifyApiRequest_error__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! bpmnlint-plugin-custom/rules/service-task-onifyApiRequest-error */ "./bpmnlint-plugin-custom/rules/service-task-onifyApiRequest-error.js");
+/* harmony import */ var bpmnlint_plugin_custom_rules_service_task_onifyApiRequest_error__WEBPACK_IMPORTED_MODULE_24___default = /*#__PURE__*/__webpack_require__.n(bpmnlint_plugin_custom_rules_service_task_onifyApiRequest_error__WEBPACK_IMPORTED_MODULE_24__);
 
 const cache = {};
 
@@ -768,11 +929,14 @@ const rules = {
   "start-event-required": "error",
   "sub-process-blank-start-event": "error",
   "superfluous-gateway": "warning",
-  "camunda/avoid-lanes": "warn",
   "camunda/forking-conditions": "error",
   "camunda/no-collapsed-sub-processes": "error",
-  "custom/script-task": "error",
-  "custom/service-task": "error"
+  "custom/script-task-error": "error",
+  "custom/script-task-warn": "warn",
+  "custom/service-task": "error",
+  "custom/service-task-httpRequest-error": "error",
+  "custom/service-task-httpRequest-warn": "warn",
+  "custom/service-task-onifyApiRequest-error": "error"
 };
 
 const config = {
@@ -842,49 +1006,28 @@ cache['bpmnlint/sub-process-blank-start-event'] = (bpmnlint_rules_sub_process_bl
 cache['bpmnlint/superfluous-gateway'] = (bpmnlint_rules_superfluous_gateway__WEBPACK_IMPORTED_MODULE_16___default());
 
 
-cache['bpmnlint-plugin-camunda/avoid-lanes'] = (bpmnlint_plugin_camunda_rules_avoid_lanes__WEBPACK_IMPORTED_MODULE_17___default());
+cache['bpmnlint-plugin-camunda/forking-conditions'] = (bpmnlint_plugin_camunda_rules_forking_conditions__WEBPACK_IMPORTED_MODULE_17___default());
 
 
-cache['bpmnlint-plugin-camunda/forking-conditions'] = (bpmnlint_plugin_camunda_rules_forking_conditions__WEBPACK_IMPORTED_MODULE_18___default());
+cache['bpmnlint-plugin-camunda/no-collapsed-sub-processes'] = (bpmnlint_plugin_camunda_rules_no_collapsed_sub_processes__WEBPACK_IMPORTED_MODULE_18___default());
 
 
-cache['bpmnlint-plugin-camunda/no-collapsed-sub-processes'] = (bpmnlint_plugin_camunda_rules_no_collapsed_sub_processes__WEBPACK_IMPORTED_MODULE_19___default());
+cache['bpmnlint-plugin-custom/script-task-error'] = (bpmnlint_plugin_custom_rules_script_task_error__WEBPACK_IMPORTED_MODULE_19___default());
 
 
-cache['bpmnlint-plugin-custom/script-task'] = (bpmnlint_plugin_custom_rules_script_task__WEBPACK_IMPORTED_MODULE_20___default());
+cache['bpmnlint-plugin-custom/script-task-warn'] = (bpmnlint_plugin_custom_rules_script_task_warn__WEBPACK_IMPORTED_MODULE_20___default());
 
 
 cache['bpmnlint-plugin-custom/service-task'] = (bpmnlint_plugin_custom_rules_service_task__WEBPACK_IMPORTED_MODULE_21___default());
 
-/***/ }),
 
-/***/ "./node_modules/bpmnlint-plugin-camunda/rules/avoid-lanes.js":
-/*!*******************************************************************!*\
-  !*** ./node_modules/bpmnlint-plugin-camunda/rules/avoid-lanes.js ***!
-  \*******************************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-const {
-  is
-} = __webpack_require__(/*! bpmnlint-utils */ "./node_modules/bpmnlint-utils/dist/index.esm.js");
+cache['bpmnlint-plugin-custom/service-task-httpRequest-error'] = (bpmnlint_plugin_custom_rules_service_task_httpRequest_error__WEBPACK_IMPORTED_MODULE_22___default());
 
 
-/**
- * Rule that reports the usage of lanes.
- */
-module.exports = function() {
+cache['bpmnlint-plugin-custom/service-task-httpRequest-warn'] = (bpmnlint_plugin_custom_rules_service_task_httpRequest_warn__WEBPACK_IMPORTED_MODULE_23___default());
 
-  function check(node, reporter) {
-    if (is(node, 'bpmn:Lane')) {
-      reporter.report(node.id, 'lanes should be avoided');
-    }
-  }
 
-  return {
-    check: check
-  };
-};
-
+cache['bpmnlint-plugin-custom/service-task-onifyApiRequest-error'] = (bpmnlint_plugin_custom_rules_service_task_onifyApiRequest_error__WEBPACK_IMPORTED_MODULE_24___default());
 
 /***/ }),
 
