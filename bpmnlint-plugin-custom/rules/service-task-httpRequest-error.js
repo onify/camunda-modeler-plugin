@@ -22,9 +22,9 @@ module.exports = function () {
         reporter.report(node.id, 'Connector input parameter `url` must be defined');
       }
 
-      if (method && (method.value.toUpperCase() === 'POST' || method.value.toUpperCase() === 'PUT' || method.value.toUpperCase() === 'PATCH') && !json) {
+      /*if (method && (method.value.toUpperCase() === 'POST' || method.value.toUpperCase() === 'PUT' || method.value.toUpperCase() === 'PATCH') && !json) {
         reporter.report(node.id, 'Connector input parameter `json` must be defined when `method` is POST, PUT or PATCH');
-      }
+      }*/
     }
   }
 
