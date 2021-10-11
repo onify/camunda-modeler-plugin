@@ -16,7 +16,7 @@ const {
  * Rule that reports missing Script format on bpmn:ScriptTask.
  * Script format can supports js or javascript
  */
-module.exports = function() {
+module.exports = function () {
 
   function check(node, reporter) {
     if (is(node, 'bpmn:ScriptTask') && (!node.scriptFormat || (node.scriptFormat !== 'js' && node.scriptFormat !== 'javascript'))) {
@@ -52,11 +52,11 @@ const {
  * Implementation only supports Connector
  * Connector Id only supports our service tasks (eg. httpRequest, onifyApiRequest, etc)
  */
-module.exports = function() {
+module.exports = function () {
 
   function findElement(elements, name) {
     if (!elements || !elements.length) return false;
-    return elements.find((element) => is(element, name))
+    return elements.find((element) => is(element, name));
   }
 
   function check(node, reporter) {
@@ -81,6 +81,7 @@ module.exports = function() {
       }
 
       const url = connector.inputOutput.inputParameters.find((input) => input.name === 'url');
+      const responseType = connector.inputOutput.inputParameters.find((input) => input.name === 'responseType');
       const method = connector.inputOutput.inputParameters.find((input) => input.name === 'method');
       const json = connector.inputOutput.inputParameters.find((input) => input.name === 'json');
 
@@ -4163,9 +4164,9 @@ __webpack_require__.r(__webpack_exports__);
 
 const persistLintingStateModule = {
   __init__: [
-    [ 'eventBus', function(eventBus) {
+    [ 'eventBus', function (eventBus) {
 
-      eventBus.on('linting.toggle', function(event) {
+      eventBus.on('linting.toggle', function (event) {
         const {
           active
         } = event;
@@ -4175,11 +4176,11 @@ const persistLintingStateModule = {
 
     } ]
   ]
-}
+};
 
-;(0,camunda_modeler_plugin_helpers__WEBPACK_IMPORTED_MODULE_0__.registerBpmnJSPlugin)({
+(0,camunda_modeler_plugin_helpers__WEBPACK_IMPORTED_MODULE_0__.registerBpmnJSPlugin)({
   __init__: [
-    function(linting) {
+    function (linting) {
       linting.setLinterConfig(_bpmnlintrc__WEBPACK_IMPORTED_MODULE_2__["default"]);
     }
   ]
@@ -4203,7 +4204,7 @@ const persistLintingStateModule = {
       bpmnlint: _bpmnlintrc__WEBPACK_IMPORTED_MODULE_2__["default"],
       active: getLintingActive()
     }
-  }
+  };
 }, 'bpmn.modeler.configure');
 
 
@@ -4212,12 +4213,14 @@ const persistLintingStateModule = {
 const LINTING_STATE_KEY = 'camunda-modeler-linter-plugin.active';
 
 function getLintingActive() {
+  // eslint-disable-next-line
   const str = window.localStorage.getItem(LINTING_STATE_KEY);
 
   return str && JSON.parse(str) || false;
 }
 
 function setLintingActive(active) {
+  // eslint-disable-next-line
   window.localStorage.setItem(LINTING_STATE_KEY, JSON.stringify(active));
 }
 

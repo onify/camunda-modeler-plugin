@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint . --cache",
-    "all": "run-s bundle copy-assets",
+    "all": "run-s lint bundle copy-assets",
     "copy-assets": "copyfiles --flat node_modules/bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css style/style.css dist",
     "bundle": "webpack",
     "bundle:watch": "webpack -w",
