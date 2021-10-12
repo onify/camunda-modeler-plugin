@@ -19,8 +19,12 @@ module.exports = function () {
         return reporter.report(node.id, 'Only `js/javascript` are supported script formats');
       }
 
-      if (!node.script) {
+      if ('script' in node && !node.script) {
         reporter.report(node.id, 'Script must be defined');
+      }
+
+      if ('resource' in node && !node.resource) {
+        reporter.report(node.id, 'Resource must be defined');
       }
     }
   }

@@ -11,6 +11,9 @@ RuleTester.verify('script-task-error', rule, {
   valid: [
     {
       moddleElement: readModdle(__dirname + '/script-task-error/valid.bpmn')
+    },
+    {
+      moddleElement: readModdle(__dirname + '/script-task-error/valid-resource.bpmn')
     }
   ],
   invalid: [
