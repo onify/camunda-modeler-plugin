@@ -23,6 +23,9 @@ RuleTester.verify('script-task-warn', rule, {
     {
       // next(null, var1)
       moddleElement: readModdle(__dirname + '/script-task-warn/valid-next-function-with-parameters.bpmn')
+    },
+    {
+      moddleElement: readModdle(__dirname + '/script-task-warn/valid-when-next-is-the-only-script.bpmn')
     }
   ],
   invalid: [
