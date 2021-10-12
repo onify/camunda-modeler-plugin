@@ -9,7 +9,9 @@ module.exports = function () {
 
   function check(node, reporter) {
     if (is(node, 'bpmn:ScriptTask')) {
-      if (!node.scriptFormat) {
+      const scriptFormat = (node.scriptFormat || '').trim();
+
+      if (scriptFormat.length === 0) {
         return reporter.report(node.id, 'Script format must be defined');
       }
 

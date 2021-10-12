@@ -9,7 +9,9 @@ module.exports = function () {
 
   function check(node, reporter) {
     if (is(node, 'bpmn:ScriptTask') && (node.scriptFormat === 'js' || node.scriptFormat === 'javascript')) {
-      if (node.script && !node.script.includes('next()')) {
+      const regex = /\snext(\s?)\((.*)\)/;
+
+      if (node.script && !node.script.match(regex)) {
         reporter.report(node.id, 'next() functions does not exist');
       }
     }

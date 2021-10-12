@@ -1,5 +1,5 @@
 const { is } = require('bpmnlint-utils');
-const { findElement } = require('../utils');
+const { findElement, getElementValue } = require('../utils');
 
 /**
  * Rule that reports missing responseType on bpmn:ServiceTask.
@@ -9,14 +9,17 @@ module.exports = function () {
   function check(node, reporter) {
     if (is(node, 'bpmn:ServiceTask')) {
       const connector = findElement(node.extensionElements && node.extensionElements.values, 'camunda:Connector');
+      const connectorId = getElementValue(connector, 'connectorId');
 
-      if (!connector || connector.connectorId !== 'httpRequest') {
+      if (!connector || connectorId !== 'httpRequest') {
         return;
       }
 
-      const url = connector.inputOutput && connector.inputOutput.inputParameters && connector.inputOutput.inputParameters.find((input) => input.name === 'url');
-      const json = connector.inputOutput && connector.inputOutput.inputParameters && connector.inputOutput.inputParameters.find((input) => input.name === 'json');
-      const method = connector.inputOutput && connector.inputOutput.inputParameters && connector.inputOutput.inputParameters.find((input) => input.name === 'method');
+      const inputOutput = getElementValue(connector, 'inputOutput', '$children');
+      const inputParameters = inputOutput?.inputParameters || inputOutput;
+      const url = inputParameters && inputParameters.find((input) => (is(input, 'camunda:InputParameter') || is(input, 'camunda:inputParameter')) && input.name === 'url');
+      // const json = connector.inputOutput && connector.inputOutput.inputParameters && connector.inputOutput.inputParameters.find((input) => input.name === 'json');
+      // const method = connector.inputOutput && connector.inputOutput.inputParameters && connector.inputOutput.inputParameters.find((input) => input.name === 'method');
 
       if (!url) {
         reporter.report(node.id, 'Connector input parameter `url` must be defined');

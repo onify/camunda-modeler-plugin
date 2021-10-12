@@ -1,5 +1,5 @@
 const { is } = require('bpmnlint-utils');
-const { findElement } = require('../utils');
+const { findElement, getElementValue } = require('../utils');
 
 /**
  * Rule that reports missing Implementation on bpmn:ServiceTask.
@@ -12,16 +12,18 @@ module.exports = function () {
     if (is(node, 'bpmn:ServiceTask')) {
       const connector = findElement(node.extensionElements && node.extensionElements.values, 'camunda:Connector');
 
-      if (!node.extensionElements || !connector) {
+      if (!connector) {
         reporter.report(node.id, 'Implementation must be defined');
         return reporter.report(node.id, 'Implementation only supports `Connector`');
       }
 
-      if (!connector.connectorId) {
+      const connectorId = getElementValue(connector, 'connectorId');
+
+      if (!connectorId) {
         return reporter.report(node.id, 'Connector Id must be defined');
       }
 
-      if (connector.connectorId !== 'httpRequest' && connector.connectorId !== 'onifyApiRequest' && connector.connectorId !== 'onifyElevatedApiRequest') {
+      if (connectorId !== 'httpRequest' && connectorId !== 'onifyApiRequest' && connectorId !== 'onifyElevatedApiRequest') {
         return reporter.report(node.id, 'Connector Id only supports `httpRequest`, `onifyApiRequest` and `onifyElevatedApiRequest`');
       }
     }

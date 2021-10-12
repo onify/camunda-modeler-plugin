@@ -18,7 +18,9 @@ module.exports = function () {
 
   function check(node, reporter) {
     if (is(node, 'bpmn:ScriptTask')) {
-      if (!node.scriptFormat) {
+      const scriptFormat = (node.scriptFormat || '').trim();
+
+      if (scriptFormat.length === 0) {
         return reporter.report(node.id, 'Script format must be defined');
       }
 
@@ -57,7 +59,9 @@ module.exports = function () {
 
   function check(node, reporter) {
     if (is(node, 'bpmn:ScriptTask') && (node.scriptFormat === 'js' || node.scriptFormat === 'javascript')) {
-      if (node.script && !node.script.includes('next()')) {
+      const regex = /\snext(\s?)\((.*)\)/;
+
+      if (node.script && !node.script.match(regex)) {
         reporter.report(node.id, 'next() functions does not exist');
       }
     }
@@ -78,7 +82,7 @@ module.exports = function () {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 const { is } = __webpack_require__(/*! bpmnlint-utils */ "./node_modules/bpmnlint-utils/dist/index.esm.js");
-const { findElement } = __webpack_require__(/*! ../utils */ "./bpmnlint-plugin-custom/utils.js");
+const { findElement, getElementValue } = __webpack_require__(/*! ../utils */ "./bpmnlint-plugin-custom/utils.js");
 
 /**
  * Rule that reports missing responseType on bpmn:ServiceTask.
@@ -88,22 +92,25 @@ module.exports = function () {
   function check(node, reporter) {
     if (is(node, 'bpmn:ServiceTask')) {
       const connector = findElement(node.extensionElements && node.extensionElements.values, 'camunda:Connector');
+      const connectorId = getElementValue(connector, 'connectorId');
 
-      if (!connector || connector.connectorId !== 'httpRequest') {
+      if (!connector || connectorId !== 'httpRequest') {
         return;
       }
 
-      const url = connector.inputOutput && connector.inputOutput.inputParameters && connector.inputOutput.inputParameters.find((input) => input.name === 'url');
-      const json = connector.inputOutput && connector.inputOutput.inputParameters && connector.inputOutput.inputParameters.find((input) => input.name === 'json');
-      const method = connector.inputOutput && connector.inputOutput.inputParameters && connector.inputOutput.inputParameters.find((input) => input.name === 'method');
+      const inputOutput = getElementValue(connector, 'inputOutput', '$children');
+      const inputParameters = inputOutput?.inputParameters || inputOutput;
+      const url = inputParameters && inputParameters.find((input) => (is(input, 'camunda:InputParameter') || is(input, 'camunda:inputParameter')) && input.name === 'url');
+      // const json = connector.inputOutput && connector.inputOutput.inputParameters && connector.inputOutput.inputParameters.find((input) => input.name === 'json');
+      // const method = connector.inputOutput && connector.inputOutput.inputParameters && connector.inputOutput.inputParameters.find((input) => input.name === 'method');
 
       if (!url) {
         reporter.report(node.id, 'Connector input parameter `url` must be defined');
       }
 
-      if (method && (method.value.toUpperCase() === 'POST' || method.value.toUpperCase() === 'PUT' || method.value.toUpperCase() === 'PATCH') && !json) {
+      /*if (method && (method.value.toUpperCase() === 'POST' || method.value.toUpperCase() === 'PUT' || method.value.toUpperCase() === 'PATCH') && !json) {
         reporter.report(node.id, 'Connector input parameter `json` must be defined when `method` is POST, PUT or PATCH');
-      }
+      }*/
     }
   }
 
@@ -122,7 +129,7 @@ module.exports = function () {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 const { is } = __webpack_require__(/*! bpmnlint-utils */ "./node_modules/bpmnlint-utils/dist/index.esm.js");
-const { findElement } = __webpack_require__(/*! ../utils */ "./bpmnlint-plugin-custom/utils.js");
+const { findElement, getElementValue } = __webpack_require__(/*! ../utils */ "./bpmnlint-plugin-custom/utils.js");
 
 /**
  * Rule that reports missing responseType on bpmn:ServiceTask.
@@ -132,12 +139,15 @@ module.exports = function () {
   function check(node, reporter) {
     if (is(node, 'bpmn:ServiceTask')) {
       const connector = findElement(node.extensionElements && node.extensionElements.values, 'camunda:Connector');
+      const connectorId = getElementValue(connector, 'connectorId');
 
-      if (!connector || connector.connectorId !== 'httpRequest') {
+      if (!connector || connectorId !== 'httpRequest') {
         return;
       }
 
-      const responseType = connector.inputOutput && connector.inputOutput.inputParameters && connector.inputOutput.inputParameters.find((input) => input.name === 'responseType');
+      const inputOutput = getElementValue(connector, 'inputOutput', '$children');
+      const inputParameters = inputOutput?.inputParameters || inputOutput;
+      const responseType = inputParameters && inputParameters.find((input) => (is(input, 'camunda:InputParameter') || is(input, 'camunda:inputParameter')) && input.name === 'responseType');
 
       if (!responseType) {
         reporter.report(node.id, 'Connector input parameter `responseType` is not defined');
@@ -160,7 +170,7 @@ module.exports = function () {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 const { is } = __webpack_require__(/*! bpmnlint-utils */ "./node_modules/bpmnlint-utils/dist/index.esm.js");
-const { findElement } = __webpack_require__(/*! ../utils */ "./bpmnlint-plugin-custom/utils.js");
+const { findElement, getElementValue } = __webpack_require__(/*! ../utils */ "./bpmnlint-plugin-custom/utils.js");
 
 /**
  * Rule for onifyApiRequest and onifyElevatedApiRequest
@@ -170,20 +180,26 @@ module.exports = function () {
   function check(node, reporter) {
     if (is(node, 'bpmn:ServiceTask')) {
       const connector = findElement(node.extensionElements && node.extensionElements.values, 'camunda:Connector');
+      const connectorId = getElementValue(connector, 'connectorId');
 
-      if (!connector || (connector.connectorId !== 'onifyApiRequest' && connector.connectorId !== 'onifyElevatedApiRequest')) {
+      if (!connector || (connectorId !== 'onifyApiRequest' && connectorId !== 'onifyElevatedApiRequest')) {
         return;
       }
 
-      const url = connector.inputOutput && connector.inputOutput.inputParameters && connector.inputOutput.inputParameters.find((input) => input.name === 'url');
-      const payload = connector.inputOutput && connector.inputOutput.inputParameters && connector.inputOutput.inputParameters.find((input) => input.name === 'payload');
-      const method = connector.inputOutput && connector.inputOutput.inputParameters && connector.inputOutput.inputParameters.find((input) => input.name === 'method');
+      const inputOutput = getElementValue(connector, 'inputOutput', '$children');
+      const inputParameters = inputOutput?.inputParameters || inputOutput;
+
+      const url = inputParameters && inputParameters.find((input) => (is(input, 'camunda:InputParameter') || is(input, 'camunda:inputParameter')) && input.name === 'url');
+      const payload = inputParameters && inputParameters.find((input) => (is(input, 'camunda:InputParameter') || is(input, 'camunda:inputParameter')) && input.name === 'payload');
+      const method = inputParameters && inputParameters.find((input) => (is(input, 'camunda:InputParameter') || is(input, 'camunda:inputParameter')) && input.name === 'method');
 
       if (!url) {
         reporter.report(node.id, 'Connector input parameter `url` must be defined');
       }
 
-      if (method && (method.value.toUpperCase() === 'POST' || method.value.toUpperCase() === 'PUT' || method.value.toUpperCase() === 'PATCH') && !payload) {
+      const methodValue = method && (method.value || method.$body);
+
+      if (methodValue && (methodValue.toUpperCase() === 'POST' || methodValue.toUpperCase() === 'PUT' || methodValue.toUpperCase() === 'PATCH') && !payload) {
         reporter.report(node.id, 'Connector input parameter `payload` must be defined when `method` is POST, PUT or PATCH');
       }
     }
@@ -204,7 +220,7 @@ module.exports = function () {
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 const { is } = __webpack_require__(/*! bpmnlint-utils */ "./node_modules/bpmnlint-utils/dist/index.esm.js");
-const { findElement } = __webpack_require__(/*! ../utils */ "./bpmnlint-plugin-custom/utils.js");
+const { findElement, getElementValue } = __webpack_require__(/*! ../utils */ "./bpmnlint-plugin-custom/utils.js");
 
 /**
  * Rule that reports missing Implementation on bpmn:ServiceTask.
@@ -217,16 +233,18 @@ module.exports = function () {
     if (is(node, 'bpmn:ServiceTask')) {
       const connector = findElement(node.extensionElements && node.extensionElements.values, 'camunda:Connector');
 
-      if (!node.extensionElements || !connector) {
+      if (!connector) {
         reporter.report(node.id, 'Implementation must be defined');
         return reporter.report(node.id, 'Implementation only supports `Connector`');
       }
 
-      if (!connector.connectorId) {
+      const connectorId = getElementValue(connector, 'connectorId');
+
+      if (!connectorId) {
         return reporter.report(node.id, 'Connector Id must be defined');
       }
 
-      if (connector.connectorId !== 'httpRequest' && connector.connectorId !== 'onifyApiRequest' && connector.connectorId !== 'onifyElevatedApiRequest') {
+      if (connectorId !== 'httpRequest' && connectorId !== 'onifyApiRequest' && connectorId !== 'onifyElevatedApiRequest') {
         return reporter.report(node.id, 'Connector Id only supports `httpRequest`, `onifyApiRequest` and `onifyElevatedApiRequest`');
       }
     }
@@ -252,11 +270,25 @@ const {
 
 module.exports = {
   findElement,
+  getElementValue,
 };
 
 function findElement(elements, name) {
   if (!elements || !elements.length) return false;
-  return elements.find((element) => is(element, name));
+  return elements.find((element) => is(element, name) || is(element, name.toLowerCase()));
+}
+
+function getElementValue(parent, name, field) {
+  if (!parent || !name) return false;
+  if (parent[name]) return parent[name];
+  if (parent.$children) {
+    const element = findElement(parent.$children, `camunda:${name}`);
+    if (field) {
+      return element && element[field];
+    }
+    return element && element.$body;
+  }
+  return false;
 }
 
 

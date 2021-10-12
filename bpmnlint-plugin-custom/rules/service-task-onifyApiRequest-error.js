@@ -1,5 +1,5 @@
 const { is } = require('bpmnlint-utils');
-const { findElement } = require('../utils');
+const { findElement, getElementValue } = require('../utils');
 
 /**
  * Rule for onifyApiRequest and onifyElevatedApiRequest
@@ -9,20 +9,26 @@ module.exports = function () {
   function check(node, reporter) {
     if (is(node, 'bpmn:ServiceTask')) {
       const connector = findElement(node.extensionElements && node.extensionElements.values, 'camunda:Connector');
+      const connectorId = getElementValue(connector, 'connectorId');
 
-      if (!connector || (connector.connectorId !== 'onifyApiRequest' && connector.connectorId !== 'onifyElevatedApiRequest')) {
+      if (!connector || (connectorId !== 'onifyApiRequest' && connectorId !== 'onifyElevatedApiRequest')) {
         return;
       }
 
-      const url = connector.inputOutput && connector.inputOutput.inputParameters && connector.inputOutput.inputParameters.find((input) => input.name === 'url');
-      const payload = connector.inputOutput && connector.inputOutput.inputParameters && connector.inputOutput.inputParameters.find((input) => input.name === 'payload');
-      const method = connector.inputOutput && connector.inputOutput.inputParameters && connector.inputOutput.inputParameters.find((input) => input.name === 'method');
+      const inputOutput = getElementValue(connector, 'inputOutput', '$children');
+      const inputParameters = inputOutput?.inputParameters || inputOutput;
+
+      const url = inputParameters && inputParameters.find((input) => (is(input, 'camunda:InputParameter') || is(input, 'camunda:inputParameter')) && input.name === 'url');
+      const payload = inputParameters && inputParameters.find((input) => (is(input, 'camunda:InputParameter') || is(input, 'camunda:inputParameter')) && input.name === 'payload');
+      const method = inputParameters && inputParameters.find((input) => (is(input, 'camunda:InputParameter') || is(input, 'camunda:inputParameter')) && input.name === 'method');
 
       if (!url) {
         reporter.report(node.id, 'Connector input parameter `url` must be defined');
       }
 
-      if (method && (method.value.toUpperCase() === 'POST' || method.value.toUpperCase() === 'PUT' || method.value.toUpperCase() === 'PATCH') && !payload) {
+      const methodValue = method && (method.value || method.$body);
+
+      if (methodValue && (methodValue.toUpperCase() === 'POST' || methodValue.toUpperCase() === 'PUT' || methodValue.toUpperCase() === 'PATCH') && !payload) {
         reporter.report(node.id, 'Connector input parameter `payload` must be defined when `method` is POST, PUT or PATCH');
       }
     }
