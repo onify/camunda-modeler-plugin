@@ -37,7 +37,7 @@ Hides (via css) elements not used or supported in Onify.
 
 ## Installation
 
-1. Download ZIP
+1. Download [latest release](/onify/onify-camunda-modeler-plugin/releases/latest)
 2. Extract it and put folder inside the "resources/plugins" directory
 3. Restart the modeler
 
