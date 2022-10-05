@@ -9,31 +9,7 @@ Based on the [Custom Linter Rules Example Plugin](https://github.com/camunda/cam
 ## Style changes
 
 * Background is set to #DEE2E6
-
-## Hidden elements
-
-Hides (via css) elements not used or supported in Onify.
-
-### Properties Panel
-
-#### General
-
-* Asynchronous Continuations
-* External Task Configuration
-* Job Configuration
-* History Configuration
-* Listeners
-
-#### Service Tasks
-
-* `Java class` option in `Implementation` dropdown
-* `External` option in `Implementation` dropdown
-* `Delegate Expression` option in `Implementation` dropdown
-
-#### User Tasks
-
-* `Due Date` field
-* `Follow Up Date` field
+* Hide (via css) elements not used or supported in Onify.
 
 ## Installation
 

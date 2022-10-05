@@ -1,66 +1,105 @@
 @import "bpmn-js-bpmnlint.css";
 
-/* Adds a nice Onify background */
 .tabs .main {
     background: #DEE2E6;
 }
 
-/* #### PROPERTIES PANEL #### */
+/* CAMUNDA MODELER 5.x */
 
-/* Hide Asynchronous Continuations */
+div[data-group-id="group-CamundaPlatform__Form"] {
+    display: none !important;
+}
+
+div[data-group-id="group-CamundaPlatform__TaskListener"] {
+    display: none !important;
+}
+
+div[data-group-id="group-CamundaPlatform__JobExecution"] {
+    display: none !important;
+}
+
+div[data-group-id="group-CamundaPlatform__HistoryCleanup"] {
+    display: none !important;
+}
+
+div[data-group-id="group-CamundaPlatform__Tasklist"] {
+    display: none !important;
+}
+
+div[data-group-id="group-CamundaPlatform__ExternalTask"] {
+    display: none !important;
+}
+
+div[data-group-id="group-CamundaPlatform__AsynchronousContinuations"] {
+    display: none !important;
+}
+
+div[data-group-id="group-CamundaPlatform__ExecutionListener"] {
+    display: none !important;
+}
+
+div[data-group-id="group-CamundaPlatform__ExtensionProperties"] {
+    display: none !important;
+}
+
+div[data-group-id="group-CamundaPlatform__FieldInjection"] {
+    display: none !important;
+}
+
+select#bio-properties-panel-implementationType option[value=class] {
+	display: none;
+}
+
+select#bio-properties-panel-implementationType option[value=external] {
+	display: none;
+}
+
+select#bio-properties-panel-implementationType option[value=expression] {
+	display: none;
+}
+
+select#bio-properties-panel-implementationType option[value=delegateExpression] {
+	display: none;
+}
+
+/* CAMUNDA MODELER 4.x */
+
 div[data-group="async"] {
     display: none;
 }
 
-/* Hide External Task Configuration */
 div[data-group="externalTaskConfiguration"] {
     display: none;
 }
 
-/* Hide Job Configuration */
 div[data-group="jobConfiguration"] {
     display: none;
 }
 
-/* Hide History Configuration */
 div[data-group="historyConfiguration"] {
     display: none;
 }
 
-/* Hide Listeners */
 div[data-group="listeners"] {
     display: none;
 }
 
-/* Hide Service Task/Implementation/Java class */
 select#camunda-implementation-select option[value=class] {
 	display: none;
 }
 
-/* Hide Service Task/Implementation/External */
 select#camunda-implementation-select option[value=external] {
 	display: none;
 }
 
-/* Hide Service Task/Implementation/Delegate Expression */
 select#camunda-implementation-select option[value=delegateExpression] {
 	display: none;
 }
 
-/* Hide User Task/Due Date */
 div[data-entry="dueDate"] {
     display: none;
 }
 
-/* Hide User Task/Follow Up Date */
 div[data-entry="followUpDate"] {
     display: none;
 }
-
-/* #### BPMN ICONS/ELEMENTS #### */
-
-/* 
-.bpmn-icon-business-rule {
-    display: none;
-}
-*/

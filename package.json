@@ -1,6 +1,6 @@
 {
   "name": "onify-camunda-modeler-plugin",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Onify Camunda Modeler Plugin",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,7 @@
     "url": "https://github.com/onify/onify-camunda-modeler-plugin"
   },
   "keywords": [
+    "onify",
     "camunda",
     "modeler",
     "plugin"
