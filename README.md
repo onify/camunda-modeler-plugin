@@ -2,10 +2,6 @@
 
 Plugin for the [Camunda Modeler](https://camunda.com/download/modeler/).
 
-## Linter Rules
-
-Based on the [Custom Linter Rules Example Plugin](https://github.com/camunda/camunda-modeler-custom-linter-rules-plugin) we have created custom linter rules for Onify. Feel free to add your own! 
-
 ## Style changes
 
 * Background is set to #DEE2E6
