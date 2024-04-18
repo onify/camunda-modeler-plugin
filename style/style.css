@@ -32,9 +32,11 @@ div[data-group-id="group-CamundaPlatform__AsynchronousContinuations"] {
     display: none !important;
 }
 
+/* 20240418 - Don't hide ExecutionListeners as Onify now supports them
 div[data-group-id="group-CamundaPlatform__ExecutionListener"] {
     display: none !important;
 }
+*/
 
 div[data-group-id="group-CamundaPlatform__FieldInjection"] {
     display: none !important;
